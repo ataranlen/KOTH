@@ -90,29 +90,24 @@ public class Loot implements JSONSerializable<Loot> {
         Random rand = new Random();
         if (this.useRandom) {
             String command = commands.get(rand.nextInt(commands.size()));
-            List<Player> players = new ArrayList<>(capper.getAvailablePlayers(koth));
-            if(command.contains("%player%")){
-                for(Player player : players){
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%player%", player.getName()));
-                }
-            } else if(command.contains("%faction%")){
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%faction%", capper.getName()));
-            } else {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
-            }
+            sendCommand(command, koth, capper);
         } else {
 	        for(String command : commands){
-	            List<Player> players = new ArrayList<>(capper.getAvailablePlayers(koth));
-	            if(command.contains("%player%")){
-	                for(Player player : players){
-	                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%player%", player.getName()));
-	                }
-	            } else if(command.contains("%faction%")){
-	                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%faction%", capper.getName()));
-	            } else {
-	                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
-	            }
+	            sendCommand(command, koth, capper);
 	        }
+        }
+    }
+    
+    private void sendCommand(String command, Koth koth, Capper<?> capper) {
+    	List<Player> players = new ArrayList<>(capper.getAvailablePlayers(koth));
+        if(command.contains("%player%")){
+            for(Player player : players){
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%player%", player.getName()));
+            }
+        } else if(command.contains("%faction%")){
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%faction%", capper.getName()));
+        } else {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
         }
     }
   
