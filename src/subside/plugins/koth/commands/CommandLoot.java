@@ -203,6 +203,20 @@ public class CommandLoot extends AbstractCommand {
             loot.getCommands().add(String.join(" ", Arrays.copyOfRange(args, 2, args.length)));
             getPlugin().getLootHandler().save();
             throw new CommandMessageException(new MessageBuilder(Lang.COMMAND_LOOT_CMD_CREATED).loot(lootName));
+        } else if(args[1].equalsIgnoreCase("random")){
+            if(args.length < 3)
+                throw new CommandMessageException(Lang.COMMAND_GLOBAL_USAGE[0]+"/koth loot cmd <loot> random <true/false>");
+            
+            String random = args[2];
+            if(random.equalsIgnoreCase("true")) {
+            	loot.setRandom(true);
+            } else if (random.equalsIgnoreCase("false")) {
+            	loot.setRandom(false);
+            } else {
+                throw new CommandMessageException(Lang.COMMAND_GLOBAL_USAGE[0]+"/koth loot cmd <loot> random <true/false>");
+            }
+            getPlugin().getLootHandler().save();
+            throw new CommandMessageException(new MessageBuilder(Lang.COMMAND_LOOT_CMD_CREATED).loot(lootName));
         } else if(args[1].equalsIgnoreCase("remove")){
             if(args.length < 3)
                 throw new CommandMessageException(Lang.COMMAND_GLOBAL_USAGE[0]+"/koth loot cmd <loot> remove <id>");

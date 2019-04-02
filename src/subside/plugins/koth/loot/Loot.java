@@ -3,6 +3,7 @@ package subside.plugins.koth.loot;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -28,12 +29,14 @@ public class Loot implements JSONSerializable<Loot> {
     private @Getter Inventory inventory;
     private @Getter String name;
     private @Getter List<String> commands;
+    private @Getter Boolean useRandom;
     
     private @Getter LootHandler lootHandler;
     
     public Loot(LootHandler lootHandler){
         this.lootHandler = lootHandler;
         commands = new ArrayList<>();
+        useRandom = false;
         inventory = Bukkit.createInventory(null, 54, "Loot chest!");
     }
     
@@ -42,9 +45,10 @@ public class Loot implements JSONSerializable<Loot> {
         setName(name);
     }
     
-    public Loot(LootHandler lootHandler, String name, List<String> commands){
+    public Loot(LootHandler lootHandler, String name, List<String> commands, Boolean random){
         this(lootHandler, name);
         this.commands = commands;
+        this.useRandom = random;
     }
     
     public void setName(String title){
@@ -57,6 +61,10 @@ public class Loot implements JSONSerializable<Loot> {
         }
         
         this.inventory = newInv;
+    }
+    
+    public void setRandom(Boolean random) {
+    	this.useRandom = random;
     }
 
     /** Get the title by the loot name
@@ -79,8 +87,9 @@ public class Loot implements JSONSerializable<Loot> {
         if(capper == null){
             return;
         }
-        
-        for(String command : commands){
+        Random rand = new Random();
+        if (this.useRandom) {
+            String command = commands.get(rand.nextInt(commands.size()));
             List<Player> players = new ArrayList<>(capper.getAvailablePlayers(koth));
             if(command.contains("%player%")){
                 for(Player player : players){
@@ -91,6 +100,19 @@ public class Loot implements JSONSerializable<Loot> {
             } else {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
             }
+        } else {
+	        for(String command : commands){
+	            List<Player> players = new ArrayList<>(capper.getAvailablePlayers(koth));
+	            if(command.contains("%player%")){
+	                for(Player player : players){
+	                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%player%", player.getName()));
+	                }
+	            } else if(command.contains("%faction%")){
+	                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%faction%", capper.getName()));
+	            } else {
+	                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+	            }
+	        }
         }
     }
   
@@ -119,6 +141,10 @@ public class Loot implements JSONSerializable<Loot> {
             }
         }
         
+        if (obj.containsKey("useRandom")) {
+        	this.useRandom = (Boolean)obj.get("useRandom");
+        }
+        
         
         return this;
     }
@@ -127,6 +153,7 @@ public class Loot implements JSONSerializable<Loot> {
     public JSONObject save(){
         JSONObject obj = new JSONObject();
         obj.put("name", this.name); // name
+        obj.put("useRandom", this.useRandom);
         
         if(inventory.getSize() > 0){
             JSONObject lootItems = new JSONObject();
