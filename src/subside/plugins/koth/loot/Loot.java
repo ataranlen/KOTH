@@ -121,7 +121,7 @@ public class Loot implements JSONSerializable<Loot> {
         } else if(command.contains("%faction%")){
         	players.retainAll(capper.getAllOnlinePlayers());
             for(Player player : players){
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%player%", player.getName()));
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%faction%", player.getName()));
             }
         } else {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
