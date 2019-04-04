@@ -20,7 +20,6 @@ import subside.plugins.koth.captureentities.Capper;
 import subside.plugins.koth.gamemodes.TimeObject;
 import subside.plugins.koth.modules.KothHandler;
 import subside.plugins.koth.scheduler.Schedule;
-import subside.plugins.koth.scheduler.ScheduleHandler;
 
 public class MessageBuilder {
     private StrObj message;
