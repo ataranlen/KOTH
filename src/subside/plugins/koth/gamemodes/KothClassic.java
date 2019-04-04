@@ -25,7 +25,7 @@ public class KothClassic extends RunningKoth {
     
     private @Getter String lootChest;
     private int timeNotCapped;
-    private int lootAmount;
+    private @Getter int lootAmount;
     private int captureCooldown;
 
     private @Getter int maxRunTime;

@@ -57,11 +57,17 @@ public abstract class RunningKoth implements JSONSerializable<RunningKoth> {
      */
     public abstract Capper<?> getCapper();
     
-    /** Get the lootchest for the KoTH that is currently running
+    /** Get the lootChest for the KoTH that is currently running
      * 
      * @return          The Loot object
      */
     public abstract String getLootChest();
+    
+    /** Get the lootAmount for the KoTH that is currently running
+     * 
+     * @return          The Loot Amount
+     */
+    public abstract int getLootAmount();
     
     /** Add data to the MessageBuilder
      * 

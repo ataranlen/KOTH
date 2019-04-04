@@ -89,8 +89,22 @@ public class Loot implements JSONSerializable<Loot> {
         }
         Random rand = new Random();
         if (this.useRandom) {
-            String command = commands.get(rand.nextInt(commands.size()));
-            sendCommand(command, koth, capper);
+        	int lootAmount = lootHandler.getPlugin().getKothHandler().getRunningKoth().getLootAmount();
+        	List<String> usableCommands = new ArrayList<>();
+            for (String command : commands) {
+                if (command != null) {
+                	usableCommands.add(command);
+                }
+            }
+            if (usableCommands.size() < 1) return;
+            for (int x = 0; x < lootAmount; x++) {
+                if (usableCommands.size() < 1) {
+                    break;
+                }
+                String command = commands.get(rand.nextInt(commands.size()));
+                usableCommands.remove(command);
+                sendCommand(command, koth, capper);
+            }
         } else {
 	        for(String command : commands){
 	            sendCommand(command, koth, capper);
@@ -105,7 +119,10 @@ public class Loot implements JSONSerializable<Loot> {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%player%", player.getName()));
             }
         } else if(command.contains("%faction%")){
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%faction%", capper.getName()));
+        	players.retainAll(capper.getAllOnlinePlayers());
+            for(Player player : players){
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%player%", player.getName()));
+            }
         } else {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
         }
